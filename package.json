@@ -1,0 +1,40 @@
+{
+  "name": "hyper-colour",
+  "version": "0.0.1",
+  "description": "Switch colour palette from Colour Lovers urls.",
+  "license": "MIT",
+  "repository": "picorana/hyper-colour",
+  "author": {
+    "name": "picorana",
+    "email": "dibartolomeo.sara@gmail.com",
+    "url": "picorana.github.io"
+  },
+  "bin": "cli.js",
+  "engines": {
+    "node": ">=0.10.0"
+  },
+  "scripts": {
+    "test": "ava"
+  },
+  "files": [
+    "index.js",
+    "cli.js"
+  ],
+  "keywords": [
+    "cli-app",
+    "cli",
+    "hyperterm",
+    "config"
+  ],
+  "dependencies": {
+    "camelcase": "^3.0.0",
+    "expand-tilde": "^1.2.2",
+    "meow": "^3.7.0",
+    "ramda": "^0.21.0",
+    "dom-parser": "^0.1.5",
+    "http": "^0.0.0"
+  },
+  "devDependencies": {
+    "ava": "^0.14.0"
+  }
+}
