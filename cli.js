@@ -2,9 +2,56 @@
 'use strict';
 
 var meow = require('meow');
-var hyperColour = require('./')();
+const camelCase = require('camelcase');
+const R = require('ramda');
+const DOMParser = require('dom-parser');
+const http = require('http');
+const fs = require('fs');
 
 const getField = (input, field) => input.map(o => o[field]);
+
+var callback = function(response) {
+  var str = '';
+
+  response.on('data', function (chunk) {
+    str += chunk;
+  });
+
+
+  response.on('end', function () {
+
+    var colors = [];
+    var parser = new DOMParser();
+    var res = parser.parseFromString(str, 'text/xml');
+    var color_list = res.getElementsByTagName("hex");
+
+    for (var i=0; i<color_list.length; i++){
+      colors[i] = "#" + color_list[i%color_list.length].innerHTML;
+    }
+
+    for (var i=0; i<colors.length; i++){
+      console.log(colors[i]);
+    }
+
+    var stream = fs.createWriteStream(require('os').homedir() + '/.hyper_plugins/local/hyper-colour/colors');
+    stream.once('open', function(fd) {
+      for (var i=0; i<color_list.length; i++){
+        stream.write("#" + color_list[i%color_list.length].innerHTML + "\n");
+      }
+      stream.end();
+    });
+  });
+}
+
+const setConfigAttr = (param,val) => {
+  if (param == 'palette' || param== 'p'){
+    try {
+      http.request('http://www.colourlovers.com/api/palette/' + val, callback).end();
+    } catch (err){
+      console.log(err);
+    }
+  }
+}
 
 var cli = meow([
 	'Usage',
@@ -21,10 +68,10 @@ var cli = meow([
 ]);
 
 if (!(Object.keys(cli.flags).length) && cli.input.length <= 1) { 
-	cli.showHelp();
+  cli.showHelp();
 	process.exit(1);
 } 
 
 if (cli.input.length === 2) {
-  hyperColour.set(cli.input[0], cli.input[1]);
+  setConfigAttr(cli.input[0], cli.input[1]);
 }
